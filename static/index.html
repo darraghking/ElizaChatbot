@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<!-- Help from: https://v4-alpha.getbootstrap.com/getting-started/introduction/ -->
+<style>
+
+    body {
+        padding-top: 5%;
+        padding-bottom: 15%;
+        background-image: url("robots.jpg");
+        background-size: repeat;   
+        background-attachment: fixed;  
+    }
+
+    /* Hide bullet points */
+    ul {
+        list-style: none;
+    }
+
+    /* Eliza Responses */
+    ul li:nth-child(4n) {
+        border-radius: 5px;
+        background-color: #db5959;
+        text-align: right;
+        margin-left: 60%;
+        margin-right: 5%;
+        font-style: italic;
+        padding: 5px;
+    }
+
+    /* Eliza Name */
+    ul li:nth-child(4n-1) {
+        text-align: right;
+        margin-left: 60%;
+        margin-right: 5%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    /* User Input */
+    ul li:nth-child(4n-2) {
+        border-radius: 5px;
+        background-color: #a7b5cc;
+        text-align: left;
+        margin-right: 60%;
+        margin-left: 5%;
+        padding: 5px;
+    }
+
+    /* User */
+    ul li:nth-child(4n-3) {
+        text-align: left;
+        margin-right: 60%;
+        margin-left: 5%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    /* Header Text Colour */
+    #elizaHeader{
+        color: white;
+    }
+
+</style>
+
+<html lang="en">
+
+<head>
+    <!-- Required Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+</head>
+
+<!-- Top Navigation Bar  -->
+<nav class="navbar fixed-top navbar-light" style="background-color:#33373f">
+    <a class="navbar-brand" id="elizaHeader">
+        Eliza   
+    </a>
+</nav>
+
+<body>
+
+    <!-- Where Chat is Displayed -->
+    <ul id="eliza"></ul>
+
+</body>
+
+<!-- Bottom Nav Bar  -->
+<nav class="navbar fixed-bottom navbar-light" style="background-color: #eab6b6;">
+
+    <div class="container">
+
+        <!-- Adapted from: https://v4-alpha.getbootstrap.com/components/forms/ -->
+        <form id="user-input-form">
+
+            <div class="form-group">
+
+                <input type="text" class="form-control" id="user-input" aria-describedby="user-input-help" placeholder="Type here">
+                <h6 id="user-input-help" class="form-text text-muted">Ask me something!</h6>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+    </div>
+</nav>
+
+<!-- jQuery first, then Tether, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+<script>
+
+  // Get Eliza List
+  var list = document.getElementById('eliza');
+
+  $("#user-input-form").submit(
+
+      function(event) {
+
+          // Stops it Refreshing  
+          event.preventDefault();
+
+            $.get('/elizaResponse', { 
+                value: $('#user-input').val()
+                })
+
+                .done(function(data) {
+
+                    // Get User Input And Make it a Variable
+                    var userInput = document.getElementById('user-input').value;
+
+                    // Create the List Elements for User
+                    userEntry = document.createElement('li');
+                    userName = document.createElement('li');
+
+                    // Add the Users Data to List
+                    userName.appendChild(document.createTextNode("User"));
+                    userEntry.appendChild(document.createTextNode(userInput));
+
+                    // Add The Data Onto the List and Display
+                    list.appendChild(userName);
+                    list.appendChild(userEntry);
+
+                    // Create List Elements for Eliza
+                    elizaEntry = document.createElement('li');
+                    elizaName = document.createElement('li');
+
+                    setTimeout(function() {
+                        elizaEntry.appendChild(document.createTextNode(data));
+                        elizaName.appendChild(document.createTextNode("Eliza"));
+                    });
+                    
+                    // Appends the Data to a List
+                    list.appendChild(elizaName);
+                    list.appendChild(elizaEntry);
+
+                    // Clears the input box after the text is entered
+                    $('#user-input').val("");
+
+                    setTimeout(function() {
+                        $('html, body').animate({
+                            scrollTop: $(window).scrollTop() + 250
+                        });
+                    });
+                })
+      });
+
+</script>
+
+</html>
